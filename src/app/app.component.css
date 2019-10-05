@@ -1,0 +1,24 @@
+#titleDiv {
+    position: absolute;
+    width: 1200px;
+    overflow: hidden;
+    left: 575px;
+    top:25px;   
+}
+
+#descriptionDiv {
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    position: absolute;
+    left: 295px;
+    top: 90px;   
+    display: block;
+    overflow: hidden;   
+    min-width: 1400px;
+}
+
+p {
+    text-align: justify;
+    display: block;
+    overflow: hidden;
+}

@@ -1,0 +1,67 @@
+<!-- <div id='aboutDiv'>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+ </button>
+</div> 
+      <div id='aboutDiv' class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+           
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    Launch demo modal
+             </button>
+             <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  ...
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+
+
+
+
+
+<div id="mainDiv">
+       
+    <button id="startBtn" (click)='begin()'> Begin</button>
+     <div id="formDiv">       
+        <form (keydown)="handleKeyupEnter($event, null)">
+            <label id="stringLabel"> Enter binary string: </label> <input id="userString" type="text" maxlength="21" autocomplete="off" ><br>           
+         </form>       
+        
+    </div>
+
+    <div id="stateDiv">       
+        <form>
+            <label id="stateLabel"> Current Machine State  <br><br><span id="machineSpan">{{machineState}} </span>  </label>    
+            <label id="execLabel" height='10px'> Current Machine Instruction </label>  <div id="instructionSpan"><span>{{machineInstruction}} </span> </div>     
+         </form>             
+    </div>
+
+
+    <div id="form22">
+          <div id="finalStateDiv">
+         <label id="finalStateLabel"> Result: </label> 
+            </div>
+        <div id="form2Div">
+        <label id="stringLabel2"> {{finalState}} </label>            
+        </div>
+    </div> 
+
+       
+    <div id="tDiv">
+        <label id="memoryLabel">Current Machine Memory</label>
+        <canvas id="tCanvas" height='350px' width='1200px'> </canvas>
+    </div>
+</div>
