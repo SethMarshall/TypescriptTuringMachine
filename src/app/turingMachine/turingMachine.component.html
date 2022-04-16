@@ -1,19 +1,16 @@
 <div id="mainDiv">       
     <button id="startBtn" (click)='beginComputeInput()'> Begin</button>
-     <div id="formDiv">       
-        <form (keydown)="handleKeyupEnter($event, null)">
-            <label id="stringLabel"> Input: </label> <input id="userString" type="text" maxlength="21" autocomplete="off" ><br>           
-         </form>       
-        
+    <div id="formDiv">       
+       <form (keydown)="handleKeyupEnter($event, null)">
+           <label id="stringLabel"> Input: </label> <input id="userString" type="text" maxlength="21" autocomplete="off" ><br>           
+        </form>               
     </div>
-
     <div id="stateDiv">       
         <form>
             <label id="stateLabel"> Machine State </label>  <div id="machineSpan"><label>{{machineState}} </label> </div>  
             <label id="execLabel"> Machine Instruction </label>  <div id="instructionSpan">{{machineInstruction}}  </div>     
          </form>             
     </div>
-
 
     <div id="form22">
           <div id="finalStateDiv">
@@ -22,8 +19,7 @@
         <div id="form2Div">
         <label id="stringLabel2"> {{finalState}} </label>            
         </div>
-    </div> 
-
+    </div>
        
     <div id="tDiv">
         <label id="memoryLabel">Machine Memory Contents</label>

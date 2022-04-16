@@ -2,10 +2,9 @@
     position: absolute;
     width: 1200px;
     overflow: hidden;
-    left: 575px;
+    left: 525px;
     top:25px;   
-    color: darkslategrey;
-   
+    color: darkslategrey;   
 }
 
 h1 {
@@ -16,7 +15,7 @@ h1 {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-weight: 500;
     position: absolute;
-    left: 295px;
+    left: 225px;
     top: 90px;   
     display: block;
     overflow: hidden;   
