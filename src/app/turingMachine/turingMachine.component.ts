@@ -6,11 +6,11 @@ enum State {
 
 @Component({
     selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.css']
+    templateUrl: './turingMachine.component.html',
+    styleUrls: ['./turingMachine.component.css']
 })
 
-export class HomeComponent implements OnInit {
+export class TuringMachineComponent implements OnInit {
 
   triangle = {
       x1: 25,
