@@ -4,21 +4,37 @@
     overflow: hidden;
     left: 575px;
     top:25px;   
+    color: darkslategrey;
+   
+}
+
+h1 {
+    font-weight: bold;
 }
 
 #descriptionDiv {
-    font-family: 'Times New Roman', Times, serif;
-    font-weight: bold;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: 500;
     position: absolute;
     left: 295px;
     top: 90px;   
     display: block;
     overflow: hidden;   
     min-width: 1400px;
+    color:darkblue;
 }
 
 p {
     text-align: justify;
     display: block;
     overflow: hidden;
+}
+
+
+#InputLabel {     
+    margin-top: 25px;
+    margin-left: 30px;
+    overflow: hidden;
+    color: green;
+    font-weight: bold;
 }
