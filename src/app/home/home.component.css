@@ -25,7 +25,7 @@
   width: 125px;
   background-color: cornflowerblue;
   position: absolute;
-  top: 245px;
+  top: 265px;
   left: 200px;
   border-width: 2px;
   border-color: black;
@@ -132,7 +132,7 @@ th {
 #stateDiv {
   background-color: white;
   position: absolute;
-  top: 190px;
+  top: 230px;
   left: 870px;
   height: 225px;
   width: 475px;
@@ -182,7 +182,7 @@ th {
 
 #formDiv {
   position: absolute;
-  top: 218px;
+  top: 238px;
   left: 385px;
   display: block;
 }
@@ -223,7 +223,7 @@ form {
   position: relative;
   display: block;
   left: 410px;
-  top: 300px;
+  top: 320px;
   border-width: 2px;
 }
 

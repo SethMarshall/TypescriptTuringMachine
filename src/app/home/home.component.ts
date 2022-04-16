@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 enum State {
-    NULL, A, B, C, C2, D, D2, E, E2, F, G, H, ACCEPT, REJECT
-}
+        NULL, A, B, C, D, E, F, G, H, I, J, ACCEPT, REJECT                        
+    }
 
 @Component({
     selector: 'app-home',
@@ -22,6 +22,8 @@ export class HomeComponent implements OnInit {
   }
 
   tape = [];
+  tapeLength = 22;
+  numTapeCells = 21;
   binaryString: string;
   programState: State;
   instructionCounter: number = 0;
@@ -51,6 +53,7 @@ export class HomeComponent implements OnInit {
       let input = document.getElementById("userString") as HTMLInputElement;     
       this.binaryString = input.value;     
    
+      //Disallow any input other than "1" and "0"
       if (this.binaryString.match(/^[0-1]+$/) == null && this.binaryString.trim() !== "") {
           alert("Improper string! Input must be a single binary string");        
           this.binaryString = "";     
@@ -61,34 +64,26 @@ export class HomeComponent implements OnInit {
       this.ngOnInit();         
       this.initTape();
       this.initProgramState();
-      this.run();
-
-      // if (!this.illegalInputString) {
-      //     this.ngOnInit();         
-      //     this.initTape();
-      //     this.run();
-      // } else {
-      //     this.ngOnInit();
-      // }
+      this.readNextTapeCell();   
  }
 
   ngOnInit() {    
-      var canvas = document.getElementById("tCanvas") as HTMLCanvasElement;
-      var ctx = canvas.getContext("2d");
+      let canvas = document.getElementById("tCanvas") as HTMLCanvasElement;
+      let ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, (canvas.height));
 
       //Zero-fill tape
-      for (let i = 0; i < 22; i++) {
+      for (let i = 0; i < this.tapeLength; i++) {
           this.tape[i] = "0";
-          var verticalLinePosition = i * 50 + 50;        
+          let verticalLinePosition = i * 50 + 50;        
           ctx.moveTo(verticalLinePosition, 80);
           ctx.lineTo(verticalLinePosition, 175);
           ctx.lineWidth = 2;
           ctx.stroke();
 
-          if (i < 21) {
+          if (i < this.numTapeCells) {
               //Position of ith tape symbol
-              var position = i * 50 + 75;
+              let position = i * 50 + 75;
               ctx.beginPath()
               ctx.arc(position, 130, 20, 0, Math.PI * 2, true);
               ctx.fillStyle = 'white';
@@ -151,6 +146,9 @@ export class HomeComponent implements OnInit {
         ctx.stroke();
         ctx.beginPath();
       }
+
+      //Tape head
+      this.currentPosition = 0;
       //Null symbol to signify end of tape
       this.tape[22] = "-";
 
@@ -159,7 +157,6 @@ export class HomeComponent implements OnInit {
       ctx.moveTo(50, 80);
       ctx.lineTo(1100, 80);
       ctx.lineWidth = 2;
-
       ctx.moveTo(50, 175);
       ctx.lineTo(1100, 175);
       ctx.lineWidth = 2;
@@ -170,10 +167,7 @@ export class HomeComponent implements OnInit {
       ctx.lineTo(50, 175);
       ctx.lineWidth = 2;
       ctx.stroke();
-
-      //Tape head
-      this.currentPosition = 0;
-
+     
       //Redraw initial position of tape head
       ctx.fillStyle = "green";
       ctx.beginPath();
@@ -196,26 +190,26 @@ export class HomeComponent implements OnInit {
   }
 
   run() {
-      this.pauseWhileReading();
-  }
-  
-  async pauseWhileReading() {
-      await this.frameSleep();
+      this.readNextTapeCell();
+  }  
+
+  async readNextTapeCell() {     
+      await new Promise(resolve => setTimeout(resolve, 200));     
       if (this.programState === State.REJECT || this.programState === State.ACCEPT) {
           return;
       } 
       this.fetchExecuteInstruction();
   }
 
-  //Turing Machine Logic
-  fetchExecuteInstruction() {      
+ //Turing Machine Program Logic
+ fetchExecuteInstruction() {      
+      this.counter = 0;
+      this.instructionCounter++;
+
       if (this.currentPosition !== 0) {
           this.machineState = State[this.programState];
       }
-
-      this.counter = 0;
-      this.instructionCounter++;
-      
+          
       if (this.currentPosition !== 0) {
       
           switch (this.programState) {
@@ -228,14 +222,14 @@ export class HomeComponent implements OnInit {
               case State.A: {
                   if (this.tape[this.currentPosition] === "1") {
                       this.programState = State.B;
-                      this.WriteNullMoveRight();
+                      this.writeNullMoveRight();
                       break;
                   } else if (this.tape[this.currentPosition] === "0") {
                       this.haltExecution(false);
                       break;
                   } else if (this.tape[this.currentPosition] === "-") {
                       this.programState = State.A;
-                      this.WriteNullMoveRight();
+                      this.writeNullMoveRight();
                       break;
                   }
               }
@@ -243,27 +237,27 @@ export class HomeComponent implements OnInit {
               case State.B: {
                   if (this.tape[this.currentPosition] === "1") {
                       this.programState = State.B;
-                      this.Write1MoveRight();
+                      this.write1MoveRight();
                       break;
                   } else if (this.tape[this.currentPosition] === "0") {
                       this.programState = State.B;
-                      this.Write0MoveRight();
+                      this.write0MoveRight();
                       break;
                   } else if (this.tape[this.currentPosition] === "-") {
                       this.programState = State.C;
-                      this.WriteNullMoveLeft();
+                      this.writeNullMoveLeft();
                       break;
                   }
               }
 
               case State.C: {
                   if (this.tape[this.currentPosition] === "1") {
-                      this.programState = State.C2;
-                      this.Write1MoveLeft();
+                      this.programState = State.D;
+                      this.write1MoveLeft();
                       break;
                   } else if (this.tape[this.currentPosition] === "0") {
-                      this.programState = State.D;
-                      this.Write1MoveLeft();
+                      this.programState = State.E;
+                      this.write1MoveLeft();
                       break;
                   } else if (this.tape[this.currentPosition] === "-") {                     
                       this.haltExecution(false);
@@ -271,10 +265,10 @@ export class HomeComponent implements OnInit {
                   }
               }
 
-              case State.C2: {
+              case State.D: {
                   if (this.tape[this.currentPosition] === "1") {
                       this.programState = State.C;
-                      this.Write1MoveLeft();
+                      this.write1MoveLeft();
                       break;
                   } else if (this.tape[this.currentPosition] === "0") {
                       this.haltExecution(false); 
@@ -285,13 +279,13 @@ export class HomeComponent implements OnInit {
                   }
               }
 
-              case State.D: {
+              case State.E: {
                   if (this.tape[this.currentPosition] === "1") {
                       this.haltExecution(false);
                       break;
                   } else if (this.tape[this.currentPosition] === "0") {
-                      this.programState = State.E;
-                      this.Write1MoveLeft();
+                      this.programState = State.F;
+                      this.write1MoveLeft();
                       break;
                   } else if (this.tape[this.currentPosition] === "-") {
                       this.haltExecution(false);
@@ -299,30 +293,30 @@ export class HomeComponent implements OnInit {
                   }
               }
 
-            case State.E: {
+            case State.F: {
                 if (this.tape[this.currentPosition] === "1") {
-                    this.programState = State.F;
-                    this.Write1MoveLeft();
+                    this.programState = State.H;
+                    this.write1MoveLeft();
                     break;
                 } else if (this.tape[this.currentPosition] === "0") {
-                    this.programState = State.E2;
-                    this.Write0MoveLeft();
+                    this.programState = State.G;
+                    this.write0MoveLeft();
                     break;
                 } else if (this.tape[this.currentPosition] === "-") {
-                    this.programState = State.G;
-                    this.WriteNullMoveRight();
+                    this.programState = State.I;
+                    this.writeNullMoveRight();
                     break;
                 }
             }
 
-          case State.E2: {
+          case State.G: {
                 if (this.tape[this.currentPosition] === "1") {
-                    this.programState = State.F;
-                    this.Write1MoveLeft();
+                    this.programState = State.H;
+                    this.write1MoveLeft();
                     break;
                 } else if (this.tape[this.currentPosition] === "0") {
-                    this.programState = State.E2;
-                    this.Write0MoveLeft();
+                    this.programState = State.G;
+                    this.write0MoveLeft();
                     break;
                 } else if (this.tape[this.currentPosition] === "-") {
                     this.haltExecution(false);
@@ -330,26 +324,26 @@ export class HomeComponent implements OnInit {
                 }
           }
 
-          case State.F: {
+          case State.H: {
               if (this.tape[this.currentPosition] === "1") {
-                  this.programState = State.F;
-                  this.Write1MoveLeft();
+                  this.programState = State.H;
+                  this.write1MoveLeft();
                   break;
               } else if (this.tape[this.currentPosition] === "0") {
-                  this.programState = State.F;
-                  this.Write0MoveLeft();
+                  this.programState = State.H;
+                  this.write0MoveLeft();
                   break;
               } else if (this.tape[this.currentPosition] === "-") {
                   this.programState = State.A;
-                  this.WriteNullMoveRight();
+                  this.writeNullMoveRight();
                   break;
               }
           } 
 
-          case State.G: {
+          case State.I: {
               if (this.tape[this.currentPosition] === "1") {
-                  this.programState = State.H;
-                  this.Write1MoveRight();
+                  this.programState = State.J;
+                  this.write1MoveRight();
                   break;
               } else if (this.tape[this.currentPosition] === "0") {
                   this.haltExecution(false);
@@ -360,10 +354,10 @@ export class HomeComponent implements OnInit {
                 }
           }
 
-          case State.H: {
+          case State.J: {
               if (this.tape[this.currentPosition] === "1") {
-                  this.programState = State.G;
-                  this.Write1MoveRight();
+                  this.programState = State.I;
+                  this.write1MoveRight();
                   break;
               } else if (this.tape[this.currentPosition] === "0") {
                   this.haltExecution(false);
@@ -381,66 +375,51 @@ export class HomeComponent implements OnInit {
           }
        }
     } else {
-        //Initial movement of head must be onto the tape itself
-        this.moveRight();
-    }
-
-    // if (this.machineState === "HALT") {
-    //     //Adjust label margins for final messages
-    //    // document.getElementById("machineSpan").style.marginLeft = "45px";
-    //    // document.getElementById("instructionSpan").style.marginRight = "18px";
-    //     this.machineInstruction = "---";
-    //  }
+        //Noop instruction: animate tape head movement from "void" onto tape itself
+        this.right = true;
+        this.moveArrow();
+    }    
   }
 
+  
+ //Tape head instructions:
 
-  //Tape head instructions
-  moveRight() {
-      this.right = true;
-      this.moveArrow();
-  }
-
-  moveLeft() {
-      this.right = false;
-      this.moveArrow();
-  }
-
-  Write0MoveRight() {
+  write0MoveRight() {
       this.machineInstruction = "WRITE 0 AND MOVE RIGHT";
       this.tape[this.currentPosition] = "0";
       this.right = true;
       this.moveArrow();
   }
 
-  Write0MoveLeft() {
+  write0MoveLeft() {
       this.machineInstruction = "WRITE 0 AND MOVE LEFT";
       this.tape[this.currentPosition] = "0"
       this.right = false;
       this.moveArrow();
   }
 
-  Write1MoveRight() {
+  write1MoveRight() {
       this.machineInstruction = "WRITE 1 AND MOVE RIGHT";
       this.tape[this.currentPosition] = "1"
       this.right = true;
       this.moveArrow();
   }
 
-  Write1MoveLeft() {
+  write1MoveLeft() {
       this.machineInstruction = "WRITE 1 AND MOVE LEFT";
       this.tape[this.currentPosition] = "1"
       this.right = false;
       this.moveArrow();
   }
 
-  WriteNullMoveRight() {
+  writeNullMoveRight() {
       this.machineInstruction = "WRITE NULL AND MOVE RIGHT";
       this.tape[this.currentPosition] = "-"
       this.right = true;
       this.moveArrow();
   }
 
-  WriteNullMoveLeft() {
+  writeNullMoveLeft() {
       this.machineInstruction = "WRITE NULL AND MOVE LEFT";
       this.tape[this.currentPosition] = "-"
       this.right = false;
@@ -451,7 +430,6 @@ export class HomeComponent implements OnInit {
       let resultLabel = document.getElementById("stringLabel2") as HTMLLabelElement;
       this.machineState = "HALT";
       this.machineInstruction = "---";
-
       if (accept) {        
           this.programState = State.ACCEPT;
           this.finalState = "ACCEPT!";                 
@@ -468,13 +446,13 @@ export class HomeComponent implements OnInit {
       let canvas = document.getElementById("tCanvas") as HTMLCanvasElement;
       let ctx = canvas.getContext("2d");
       ctx.clearRect(0, 0, canvas.width, (canvas.height));
+      
       this.drawTape();
-
       this.intitialPosition += factor;
-      ctx.fillStyle = "green";
-      ctx.beginPath();
-
       this.currentPosition = Math.floor(this.intitialPosition / 50);
+
+      ctx.fillStyle = "green";
+      ctx.beginPath();     
       ctx.moveTo(this.intitialPosition + this.triangle.x1, this.triangle.y1);
       ctx.fillStyle = "green";
       ctx.lineTo(this.intitialPosition + this.triangle.x2, this.triangle.y2);
@@ -488,7 +466,7 @@ export class HomeComponent implements OnInit {
   }
 
   moveArrow() {
-      this.positionX = this.positionX + this.speedX;
+     // this.positionX = this.positionX;  //this.speedX;
       if (this.counter < 50) {
           if (this.right) {
               this.drawArrow(1);
@@ -499,14 +477,13 @@ export class HomeComponent implements OnInit {
           window.requestAnimationFrame(() => this.moveArrow());
       }
       else {
-          this.pauseWhileReading();
+          this.readNextTapeCell();
       }
   }
 
   drawTape() {
       let canvas = document.getElementById("tCanvas") as HTMLCanvasElement;
       let ctx = canvas.getContext("2d");
-
       ctx.moveTo(50, 80);
       ctx.lineTo(1100, 80);
       ctx.stroke();
@@ -514,16 +491,16 @@ export class HomeComponent implements OnInit {
       ctx.lineTo(1100, 175);
       ctx.stroke();
 
-      //draw current tape symbols and vertical lines
+      //redraw current tape symbols and vertical lines
       for (let i = 0; i < 22; i++) {
-          var verticalLinePosition = i * 50 + 50;
+          let verticalLinePosition = i * 50 + 50;
           ctx.moveTo(verticalLinePosition, 80);
           ctx.lineTo(verticalLinePosition, 175);
           ctx.lineWidth = 2;
           ctx.stroke();
 
           //Position of ith symbol on tape
-          var position = i * 50 + 25;
+          let position = i * 50 + 25;
 
         if (this.tape[i] === "0") {
             ctx.beginPath()
@@ -549,12 +526,6 @@ export class HomeComponent implements OnInit {
       }
   }
 
-
-//Misc functions
-
-  frameSleep() {
-     return new Promise(resolve => setTimeout(resolve, 250));
-  }
   //Prevent "Enter" from posting back
   handleKeyupEnter(event, value) {
       if (event.code == "Enter") {
