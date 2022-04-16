@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
+//Turing MAchine logical states
 enum State {
         NULL, A, B, C, D, E, F, G, H, I, J, ACCEPT, REJECT                        
     }
@@ -11,7 +12,7 @@ enum State {
 })
 
 export class TuringMachineComponent implements OnInit {
-  //TM logical related fields
+  //Turing Machine related fields
   tape = [];
   tapeLength = 22;
   numTapeCells = 21;
@@ -27,7 +28,6 @@ export class TuringMachineComponent implements OnInit {
   currentPosition: number = 0;
   counter: number = 50;
   right: boolean = true;
-
   triangle = {
     x1: 25,
     y1: 200,
@@ -37,9 +37,8 @@ export class TuringMachineComponent implements OnInit {
     y3: 39
 }
 
-  constructor() {
-      this.counter = 0;
-      //tape head drawn outside tape bounadries on application load
+  constructor() {     
+      //draw tape head to left of tape bounadries on application load
       this.intitialPosition = 0;
   }
 
@@ -50,9 +49,8 @@ export class TuringMachineComponent implements OnInit {
    
       //Disallow any input other than "1" or "0"
       if (this.binaryString.match(/^[0-1]+$/) == null && this.binaryString.trim() !== "") {
-          alert("Improper string! Input must be a single binary string");        
-          this.binaryString = "";     
-          input.value = "";            
+          alert("Improper string! Input must be a binary string of 1s and 0s");        
+          this.binaryString, input.value = "";                    
           return;
       }
      
@@ -61,7 +59,6 @@ export class TuringMachineComponent implements OnInit {
       this.storeInput();
       this.readNextTapeCell();   
  }
-
 
 
   initProgramState() {
@@ -75,7 +72,7 @@ export class TuringMachineComponent implements OnInit {
 
 
   storeInput() {
-      //load user binary string input onto tape
+      //load user input onto tape
       for (let i = 0; i < this.tapeLength; i++) {
           if (i === 0) {
               this.tape[i] = "X";
@@ -95,7 +92,7 @@ export class TuringMachineComponent implements OnInit {
    }
 
   async readNextTapeCell() {    
-      //Pause tape head at each cell to visually simulate read-write operation 
+      //pause to visually simulate read-write operation 
       await new Promise(resolve => setTimeout(resolve, 200));     
       if (this.programState === State.REJECT || this.programState === State.ACCEPT) {
           return;
@@ -115,6 +112,7 @@ export class TuringMachineComponent implements OnInit {
       
           switch (this.programState) {
 
+             //move from "void" to first genuine state
               case State.NULL: {
                   this.programState = State.A;
                   this.machineState = "A";
@@ -122,16 +120,14 @@ export class TuringMachineComponent implements OnInit {
 
               case State.A: {
                   if (this.tape[this.currentPosition] === "1") {
-                      this.programState = State.B;
-                      //this.writeNullMoveRight();
+                      this.programState = State.B;                    
                       this.writeMove("NULL", true);
                       break;
                   } else if (this.tape[this.currentPosition] === "0") {
                       this.haltExecution(false);
                       break;
                   } else if (this.tape[this.currentPosition] === "-") {
-                      this.programState = State.A;
-                      //this.writeNullMoveRight();
+                      this.programState = State.A;                    
                       this.writeMove("NULL", true);
                       break;
                   }
@@ -139,18 +135,15 @@ export class TuringMachineComponent implements OnInit {
 
               case State.B: {
                   if (this.tape[this.currentPosition] === "1") {
-                      this.programState = State.B;
-                      //this.write1MoveRight();
+                      this.programState = State.B;                     
                       this.writeMove("1", true);
                       break;
                   } else if (this.tape[this.currentPosition] === "0") {
-                      this.programState = State.B;
-                      //this.write0MoveRight();
+                      this.programState = State.B;                     
                       this.writeMove("0", true);
                       break;
                   } else if (this.tape[this.currentPosition] === "-") {
-                      this.programState = State.C;
-                      //this.writeNullMoveLeft();
+                      this.programState = State.C;                     
                       this.writeMove("NULL", false);
                       break;
                   }
@@ -158,13 +151,11 @@ export class TuringMachineComponent implements OnInit {
 
               case State.C: {
                   if (this.tape[this.currentPosition] === "1") {
-                      this.programState = State.D;
-                      //this.write1MoveLeft();
+                      this.programState = State.D;                    
                       this.writeMove("1", false);
                       break;
                   } else if (this.tape[this.currentPosition] === "0") {
-                      this.programState = State.E;
-                      //this.write1MoveLeft();
+                      this.programState = State.E;                    
                       this.writeMove("1", false);
                       break;
                   } else if (this.tape[this.currentPosition] === "-") {                     
@@ -175,8 +166,7 @@ export class TuringMachineComponent implements OnInit {
 
               case State.D: {
                   if (this.tape[this.currentPosition] === "1") {
-                      this.programState = State.C;
-                      //this.write1MoveLeft();
+                      this.programState = State.C;                     
                       this.writeMove("1", false);
                       break;
                   } else if (this.tape[this.currentPosition] === "0") {
@@ -193,8 +183,7 @@ export class TuringMachineComponent implements OnInit {
                       this.haltExecution(false);
                       break;
                   } else if (this.tape[this.currentPosition] === "0") {
-                      this.programState = State.F;
-                      //this.write1MoveLeft();
+                      this.programState = State.F;                     
                       this.writeMove("1", false);
                       break;
                   } else if (this.tape[this.currentPosition] === "-") {
@@ -205,18 +194,15 @@ export class TuringMachineComponent implements OnInit {
 
             case State.F: {
                 if (this.tape[this.currentPosition] === "1") {
-                    this.programState = State.H;
-                    //this.write1MoveLeft();
+                    this.programState = State.H;                   
                     this.writeMove("1", false);
                     break;
                 } else if (this.tape[this.currentPosition] === "0") {
-                    this.programState = State.G;
-                    //this.write0MoveLeft();
+                    this.programState = State.G;                   
                     this.writeMove("0", false);
                     break;
                 } else if (this.tape[this.currentPosition] === "-") {
-                    this.programState = State.I;
-                    //this.writeNullMoveRight();
+                    this.programState = State.I;                   
                     this.writeMove("NULL", true);
                     break;
                 }
@@ -224,13 +210,11 @@ export class TuringMachineComponent implements OnInit {
 
           case State.G: {
                 if (this.tape[this.currentPosition] === "1") {
-                    this.programState = State.H;
-                    //this.write1MoveLeft();
+                    this.programState = State.H;                   
                     this.writeMove("1", false);
                     break;
                 } else if (this.tape[this.currentPosition] === "0") {
-                    this.programState = State.G;
-                    //this.write0MoveLeft();
+                    this.programState = State.G;                   
                     this.writeMove("0", false);
                     break;
                 } else if (this.tape[this.currentPosition] === "-") {
@@ -241,18 +225,15 @@ export class TuringMachineComponent implements OnInit {
 
           case State.H: {
               if (this.tape[this.currentPosition] === "1") {
-                  this.programState = State.H;
-                  //this.write1MoveLeft();
+                  this.programState = State.H;                  
                   this.writeMove("1", false);
                   break;
               } else if (this.tape[this.currentPosition] === "0") {
-                  this.programState = State.H;
-                  //this.write0MoveLeft();
+                  this.programState = State.H;                
                   this.writeMove("0", false);
                   break;
               } else if (this.tape[this.currentPosition] === "-") {
-                  this.programState = State.A;
-                  //this.writeNullMoveRight();
+                  this.programState = State.A;                
                   this.writeMove("NULL", true);
                   break;
               }
@@ -260,8 +241,7 @@ export class TuringMachineComponent implements OnInit {
 
           case State.I: {
               if (this.tape[this.currentPosition] === "1") {
-                  this.programState = State.J;
-                  //this.write1MoveRight();
+                  this.programState = State.J;                
                   this.writeMove("1", true);
                   break;
               } else if (this.tape[this.currentPosition] === "0") {
@@ -275,8 +255,7 @@ export class TuringMachineComponent implements OnInit {
 
           case State.J: {
               if (this.tape[this.currentPosition] === "1") {
-                  this.programState = State.I;
-                  //this.write1MoveRight();
+                  this.programState = State.I;                
                   this.writeMove("1", true);
                   break;
               } else if (this.tape[this.currentPosition] === "0") {
@@ -300,7 +279,7 @@ export class TuringMachineComponent implements OnInit {
   }
 
   
- //Tape head instructions:
+ //Tape head instruction functions:
 
   writeMove(symbol: string, moveright: boolean) {    
       let direction = "";      
@@ -320,53 +299,13 @@ export class TuringMachineComponent implements OnInit {
       this.tape[this.currentPosition] = symbol;
       this.moveArrow();
   }
-
-//   write0MoveRight() {
-//       this.machineInstruction = "WRITE 0 AND MOVE RIGHT";
-//       this.tape[this.currentPosition] = "0";
-//       this.right = true;
-//       this.moveArrow();
-//   }
-
-//   write0MoveLeft() {
-//       this.machineInstruction = "WRITE 0 AND MOVE LEFT";
-//       this.tape[this.currentPosition] = "0"
-//       this.right = false;
-//       this.moveArrow();
-//   }
-
-//   write1MoveRight() {
-//       this.machineInstruction = "WRITE 1 AND MOVE RIGHT";
-//       this.tape[this.currentPosition] = "1"
-//       this.right = true;
-//       this.moveArrow();
-//   }
-
-//   write1MoveLeft() {
-//       this.machineInstruction = "WRITE 1 AND MOVE LEFT";
-//       this.tape[this.currentPosition] = "1"
-//       this.right = false;
-//       this.moveArrow();
-//   }
-
-//   writeNullMoveRight() {
-//       this.machineInstruction = "WRITE NULL AND MOVE RIGHT";
-//       this.tape[this.currentPosition] = "-"
-//       this.right = true;
-//       this.moveArrow();
-//   }
-
-//   writeNullMoveLeft() {
-//       this.machineInstruction = "WRITE NULL AND MOVE LEFT";
-//       this.tape[this.currentPosition] = "-"
-//       this.right = false;
-//       this.moveArrow();
-//   }
+  
 
   haltExecution(accept: boolean) {
       let resultLabel = document.getElementById("stringLabel2") as HTMLLabelElement;
       this.machineState = "HALT";
       this.machineInstruction = "---";
+      
       if (accept) {        
           this.programState = State.ACCEPT;
           this.finalState = "ACCEPT!";                 
@@ -381,6 +320,7 @@ export class TuringMachineComponent implements OnInit {
 
 
 //Animation related functions:
+
     ngOnInit() {    
         let canvas = document.getElementById("tCanvas") as HTMLCanvasElement;
         let ctx = canvas.getContext("2d");
